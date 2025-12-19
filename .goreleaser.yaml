@@ -40,3 +40,16 @@ changelog:
 checksum:
   name_template: '{{ .ProjectName }}_{{ .Version }}_checksums.txt'
   algorithm: sha256
+
+brews:
+  - name: telegram-mcp
+    homepage: "https://github.com/chaindead/telegram-mcp"
+    description: "Telegram MCP server for AI assistants"
+    license: "MIT"
+    repository:
+      owner: chaindead
+      name: homebrew-tap
+    install: |
+      bin.install "telegram-mcp"
+    test: |
+      system "#{bin}/telegram-mcp", "--version"
