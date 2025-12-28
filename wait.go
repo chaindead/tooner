@@ -16,6 +16,7 @@ func newWait() *wait {
 func (w *wait) Add(s string) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
+
 	w.m[s] = true
 }
 
