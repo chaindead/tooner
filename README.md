@@ -2,6 +2,17 @@
 
 An MCP (Model Context Protocol) proxy that wraps MCP servers and converts JSON responses to [TOON format](https://toonformat.dev/) — a token-efficient alternative to JSON optimized for LLMs (~40% fewer tokens).
 
+- [What it does](#what-it-does)
+- [Installation](#installation)
+  - [Homebrew](#homebrew)
+  - [NPX](#npx)
+  - [From Releases](#from-releases)
+    - [MacOS](#macos)
+    - [Linux](#linux)
+    - [Windows](#windows)
+  - [From Source](#from-source)
+- [Configure MCP (Cursor example)](#configure-mcp-cursor-example)
+
 ## What it does
 
 Tooner runs any MCP server as a subprocess and transparently proxies messages between the client (e.g. Cursor) and the server. When the server returns JSON in `tools/call` responses, Tooner converts that JSON to TOON before forwarding it to the client, reducing token usage while preserving the same data.
