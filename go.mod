@@ -1,4 +1,4 @@
-module tooner
+module github.com/chaindead/tooner
 
 go 1.24.5
 
