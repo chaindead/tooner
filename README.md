@@ -44,14 +44,7 @@ You can run the latest version directly using npx (supports macOS, Linux, and Wi
 npx -y @chaindead/tooner
 ```
 
-When using NPX, modify the standard commands and configuration as follows:
-
-- [Authentication command](#authorization) becomes:
-```bash
-npx -y @chaindead/tooner auth ...
-```
-
-- [Claude MCP server configuration](#client-configuration) becomes:
+When using NPX [Configure MCP (Cursor example)](#configure-mcp-cursor-example) becomes:
 ```json
 {
   "mcpServers": {
