@@ -2,15 +2,29 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"log"
 	"os"
 	"os/exec"
 
+	"github.com/spf13/pflag"
 	"github.com/tidwall/gjson"
 )
 
+var (
+	buildTag    = "dev"
+	showVersion = pflag.BoolP("version", "v", false, "show version")
+)
+
 func main() {
+	pflag.Parse()
+
+	if *showVersion {
+		fmt.Println("tooner", buildTag)
+		os.Exit(0)
+	}
+
 	logPath := os.Getenv("TOONER_LOG_PATH")
 	if logPath == "" {
 		logPath = "tooner.log"

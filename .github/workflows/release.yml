@@ -27,4 +27,13 @@ jobs:
           version: "~> v2"
           args: release --clean
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_AUTH_TOKEN }}
+      - name: Publish to npm
+        uses: evg4b/goreleaser-npm-publisher-action@v1
+        with:
+          token: ${{ secrets.NPM_AUTH_TOKEN }}
+          prefix: '@chaindead'
+          description: MCP proxy that reduces token usage via TOON format
+          files: |-
+            LICENSE
+            README.md
