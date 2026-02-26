@@ -1,0 +1,8 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  install:
+    cmds:
+      - go build -o $GOBIN/tooner ./...
