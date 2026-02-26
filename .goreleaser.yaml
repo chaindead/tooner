@@ -42,14 +42,14 @@ checksum:
   algorithm: sha256
 
 brews:
-  - name: telegram-mcp
-    homepage: "https://github.com/chaindead/telegram-mcp"
-    description: "Telegram MCP server for AI assistants"
+  - name: tooner
+    homepage: "https://github.com/chaindead/tooner"
+    description: "MCP proxy that reduces token usage via TOON format"
     license: "MIT"
     repository:
       owner: chaindead
       name: homebrew-tap
     install: |
-      bin.install "telegram-mcp"
+      bin.install "tooner"
     test: |
-      system "#{bin}/telegram-mcp", "--version"
+      system "#{bin}/tooner", "--version"
