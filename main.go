@@ -9,6 +9,7 @@ import (
 	"os/exec"
 
 	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
 )
 
 var (
@@ -47,7 +48,8 @@ func main() {
 		log.Fatalln("stating provided command", err)
 	}
 
-	waitMap := newWait()
+	waitCall := newWait()
+	waitList := newWait()
 	// Client → Server
 	go func() {
 		scanner := bufio.NewScanner(os.Stdin)
@@ -56,9 +58,16 @@ func main() {
 
 			if gjson.Get(line, "method").String() == "tools/call" {
 				id := gjson.Get(line, "id").String()
-				logger.Println("!!! call:", id)
+				logger.Println("!!! call tool:", id)
 
-				waitMap.Add(id)
+				waitCall.Add(id)
+			}
+
+			if gjson.Get(line, "method").String() == "tools/list" {
+				id := gjson.Get(line, "id").String()
+				logger.Println("!!! call list:", id)
+
+				waitList.Add(id)
 			}
 
 			logger.Println(">>>", line)
@@ -73,11 +82,26 @@ func main() {
 			line := scanner.Text()
 
 			id := gjson.Get(line, "id").String()
-			ok := waitMap.Take(id)
+			ok := waitCall.Take(id)
 
 			if ok && id != "" {
 				logger.Println("!!! detect:", id)
 				line = convert(logger, line)
+			}
+
+			ok = waitList.Take(id)
+			if ok && id != "" {
+				logger.Println("!!! detect list:", id)
+
+				r := gjson.Get(line, "result.tools").Array()
+				for i := range r {
+					path := fmt.Sprintf("result.tools.%d.outputSchema", i)
+
+					line, err = sjson.Delete(line, path)
+					if err != nil {
+						logger.Println("!!! detect list index:", i, err)
+					}
+				}
 			}
 
 			logger.Println("<<<", line)
