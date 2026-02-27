@@ -10,6 +10,7 @@ import (
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 	"github.com/toon-format/toon-go"
+	"github.com/yinxulai/go-jsonrepair/jsonrepair"
 )
 
 func convert(logger *log.Logger, line string) string {
@@ -60,7 +61,15 @@ func json2toon(data string) (string, error) {
 
 	var sData any
 	if err := json.Unmarshal([]byte(cData), &sData); err != nil {
-		return "", errors.Wrap(err, "unmarshal json")
+		repaired, err2 := jsonRepair(cData)
+		if err2 != nil {
+			return "", errors.Wrapf(err, "try json repair(%s)", err2)
+		}
+
+		err2 = json.Unmarshal([]byte(repaired), &sData)
+		if err2 != nil {
+			return "", errors.Wrapf(err, "unmarshal repaired(%s) json:", err2)
+		}
 	}
 
 	sData = normalizeAny(sData)
@@ -71,4 +80,23 @@ func json2toon(data string) (string, error) {
 	}
 
 	return string(tData), nil
+}
+
+func jsonRepair(data string) (string, error) {
+	repaired, err := jsonrepair.Repair(data)
+	if err != nil {
+		return "", errors.Wrap(err, "repair")
+	}
+
+	beforeLen := len(data)
+	afterLen := len(repaired)
+	decrease := float64(beforeLen-afterLen) / float64(beforeLen)
+
+	fmt.Println(beforeLen, afterLen, decrease)
+
+	if decrease > 0.2 {
+		return "", fmt.Errorf("repair decrease: %.2f", decrease)
+	}
+
+	return repaired, nil
 }
