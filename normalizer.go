@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"reflect"
 	"strings"
 )
@@ -26,15 +25,11 @@ func isZero[T comparable](t T) bool {
 	return t == zero
 }
 func removeEmpty(obj any) any {
-	jsonObj, _ := json.Marshal(obj)
-	fmt.Printf("CALL removeEmpty %T: %s\n", obj, string(jsonObj))
 	switch t := obj.(type) {
 	case map[string]any:
-		fmt.Printf("\tCALL SWICH MAP %T: %#v\n", t, t)
 		for k, v := range obj.(map[string]any) {
 			nV := removeEmpty(v)
 			if isZero(nV) {
-				fmt.Println("\t\tZERO MAP ", nV)
 				delete(t, k)
 				continue
 			}
@@ -43,18 +38,15 @@ func removeEmpty(obj any) any {
 		}
 
 		if len(t) == 0 {
-			fmt.Println("\t\tZERO MAP NIL")
 			return nil
 		}
 
 		return t
 	case []any:
-		fmt.Printf("\tCALL SLICE %T: %#v\n", t, t)
 		var nT []any
 		for _, v := range t {
 			nV := removeEmpty(v)
 			if isZero(nV) {
-				fmt.Println("\t\tZERO SLICE ", nV)
 				continue
 			}
 
@@ -62,7 +54,6 @@ func removeEmpty(obj any) any {
 		}
 
 		if len(t) == 0 {
-			fmt.Println("ZERO SLICE NIL")
 			return nil
 		}
 
