@@ -15,6 +15,15 @@ import (
 func convert(logger *log.Logger, line string) string {
 	newLine := line
 
+	if gjson.Get(line, "result.structuredContent").Exists() {
+		// TODO: case if structuredContent but not simple content
+		var err error
+		newLine, err = sjson.Delete(newLine, "result.structuredContent")
+		if err != nil {
+			logger.Println("!!! remove structured:", newLine)
+		}
+	}
+
 	contents := gjson.Get(line, "result.content").Array()
 	for i, content := range contents {
 		if content.Get("type").String() != "text" {
