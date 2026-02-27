@@ -15,8 +15,8 @@ import (
 func convert(logger *log.Logger, line string) string {
 	newLine := line
 
-	if gjson.Get(line, "result.structuredContent").Exists() {
-		// TODO: case if structuredContent but not simple content
+	contents := gjson.Get(line, "result.content").Array()
+	if gjson.Get(line, "result.structuredContent").Exists() && len(contents) > 0 {
 		var err error
 		newLine, err = sjson.Delete(newLine, "result.structuredContent")
 		if err != nil {
@@ -24,7 +24,6 @@ func convert(logger *log.Logger, line string) string {
 		}
 	}
 
-	contents := gjson.Get(line, "result.content").Array()
 	for i, content := range contents {
 		if content.Get("type").String() != "text" {
 			continue
@@ -63,6 +62,8 @@ func json2toon(data string) (string, error) {
 	if err := json.Unmarshal([]byte(cData), &sData); err != nil {
 		return "", errors.Wrap(err, "unmarshal json")
 	}
+
+	sData = normalizeAny(sData)
 
 	tData, err := toon.Marshal(sData, toon.WithLengthMarkers(true))
 	if err != nil {
