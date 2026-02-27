@@ -52,4 +52,5 @@ brews:
     install: |
       bin.install "tooner"
     test: |
-      system "#{bin}/tooner", "--version"
+      ENV["TOONER_SHOW_VERSION"] = "1"
+      system "#{bin}/tooner"

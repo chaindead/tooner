@@ -8,19 +8,15 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/spf13/pflag"
 	"github.com/tidwall/gjson"
 )
 
 var (
-	buildTag    = "dev"
-	showVersion = pflag.BoolP("version", "v", false, "show version")
+	buildTag = "dev"
 )
 
 func main() {
-	pflag.Parse()
-
-	if *showVersion {
+	if os.Getenv("TOONER_SHOW_VERSION") != "" {
 		fmt.Println("tooner", buildTag)
 		os.Exit(0)
 	}
