@@ -92,8 +92,6 @@ func jsonRepair(data string) (string, error) {
 	afterLen := len(repaired)
 	decrease := float64(beforeLen-afterLen) / float64(beforeLen)
 
-	fmt.Println(beforeLen, afterLen, decrease)
-
 	if decrease > 0.2 {
 		return "", fmt.Errorf("repair decrease: %.2f", decrease)
 	}
