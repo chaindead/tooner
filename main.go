@@ -53,6 +53,8 @@ func main() {
 	// Client → Server
 	go func() {
 		scanner := bufio.NewScanner(os.Stdin)
+		scanner.Buffer(make([]byte, 4096), 10*1024*1024)
+
 		for scanner.Scan() {
 			line := scanner.Text()
 
@@ -78,6 +80,8 @@ func main() {
 	// Server → Client
 	go func() {
 		scanner := bufio.NewScanner(serverOut)
+		scanner.Buffer(make([]byte, 4096), 10*1024*1024)
+
 		for scanner.Scan() {
 			line := scanner.Text()
 
