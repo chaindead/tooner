@@ -6,3 +6,13 @@ tasks:
   install:
     cmds:
       - go build -o $GOBIN/tooner ./...
+  tag:
+    vars:
+      LAST_TAG:
+        sh: git describe --tags --abbrev=0
+      NEXT_TAG:
+        sh: awk -F. '{sub(/^v/,"",$1); print "v"$1"."$2"."$3+1}' <<< "{{.LAST_TAG}}"
+    prompt: ["push tag {{.NEXT_TAG}}?"]
+    cmds:
+      - git tag {{.NEXT_TAG}}
+      - git push origin {{.NEXT_TAG}}
