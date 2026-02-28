@@ -6,11 +6,11 @@ import (
 	"log"
 	"strings"
 
+	"github.com/chaindead/jsonrepair"
 	"github.com/pkg/errors"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 	"github.com/toon-format/toon-go"
-	"github.com/yinxulai/go-jsonrepair/jsonrepair"
 )
 
 func convert(logger *log.Logger, line string) string {
