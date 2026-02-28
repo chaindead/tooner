@@ -5,7 +5,7 @@
 
 # Tooner
 
-An MCP (Model Context Protocol) proxy that wraps MCP servers and converts JSON responses to [TOON format](https://toonformat.dev/) — a token-efficient alternative to JSON optimized for LLMs (~40% fewer tokens).
+Tooner is a lightweight MCP wrapper that keeps your server setup unchanged, but makes model-facing responses cleaner and shorter. It rewrites JSON-heavy outputs into [TOON format](https://toonformat.dev/) so models spend fewer tokens on syntax noise (~40% fewer tokens).
 
 - [What it does](#what-it-does)
 - [Installation](#installation)
@@ -16,11 +16,14 @@ An MCP (Model Context Protocol) proxy that wraps MCP servers and converts JSON r
     - [Linux](#linux)
     - [Windows](#windows)
   - [From Source](#from-source)
-- [Configure MCP (Cursor example)](#configure-mcp-cursor-example)
+- [Configure MCP](#configure-mcp)
 
 ## What it does
 
-Tooner runs any MCP server as a subprocess and transparently proxies messages between the client (e.g. Cursor) and the server. When the server returns JSON in `tools/call` responses, Tooner converts that JSON to TOON before forwarding it to the client, reducing token usage while preserving the same data.
+- Works with your existing MCP servers (no server rewrite required)
+- Keeps the same data, but in a format models read more efficiently
+- Reduces token usage on large JSON responses
+- Handles many messy JSON-like outputs and still returns useful model-ready content
 
 ## Installation
 
@@ -139,24 +142,67 @@ Requirements:
 go install github.com/chaindead/tooner@latest
 ```
 
-## Configure MCP (Cursor example)
+## Configure MCP
 
-Add Tooner as a wrapper in `~/.cursor/mcp.json`, passing your MCP server as the first argument:
+Setup is the only thing you need to do: in MCP config, shift the command by one argument and insert `tooner` at the beginning.
+
+Before:
+
+```json
+{
+  "mcpServers": {
+    "memory": {
+      "command": "memory-mcp-server-go"
+    }
+  }
+}
+```
+
+After:
 
 ```json
 {
   "mcpServers": {
     "memory": {
       "command": "tooner",
-      "args": ["memory-mcp-server-go"],
+      "args": ["memory-mcp-server-go"]
+    }
+  }
+}
+```
+
+Another example - Postgres MCP:
+
+```json
+{
+  "mcpServers": {
+    "postgres": {
+      "command": "tooner",
+      "args": [
+        "uvx",
+        "postgres-mcp",
+        "--access-mode=unrestricted"
+      ],
       "env": {
-        "TOONER_LOG_PATH": "/tmp/mcp.log"
+        "DATABASE_URI": "...",
+        "TOONER_LOG_PATH": "/tmp/tooner.log"
       }
     }
   }
 }
 ```
 
-- Replace `memory-mcp-server-go` with any MCP server binary in your PATH (e.g. `go-mcp-postgres`).
-- You can pass args and envs to MCP as always
-- TOONER_LOG_PATH is optional
+NPX setup:
+
+```json
+{
+  "mcpServers": {
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@chaindead/tooner", "memory-mcp-server-go"]
+    }
+  }
+}
+```
+
+That's it. From there, `tooner` launches your MCP server as a subprocess and transparently proxies traffic, replacing JSON with TOON.
