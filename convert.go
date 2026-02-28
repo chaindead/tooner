@@ -73,8 +73,12 @@ func json2toon(data string) (string, error) {
 	}
 
 	sData = normalizeAny(sData)
+	opts := []toon.EncoderOption{
+		toon.WithLengthMarkers(true),
+		toon.WithArrayDelimiter(toon.DelimiterTab),
+	}
 
-	tData, err := toon.Marshal(sData, toon.WithLengthMarkers(true))
+	tData, err := toon.Marshal(sData, opts...)
 	if err != nil {
 		return "", errors.Wrap(err, "marshal toon")
 	}
