@@ -7,6 +7,10 @@
 
 Tooner is a lightweight MCP wrapper that keeps your server setup unchanged, but makes model-facing responses cleaner and shorter. It rewrites JSON-heavy outputs into [TOON format](https://toonformat.dev/) so models spend fewer tokens on syntax noise (~40% fewer tokens).
 
+<a href="https://glama.ai/mcp/servers/chaindead/tooner">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/chaindead/tooner/badge" alt="TOONer MCP server" />
+</a>
+
 - [What it does](#what-it-does)
 - [Installation](#installation)
   - [Homebrew](#homebrew)
